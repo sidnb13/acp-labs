@@ -42,6 +42,9 @@ int uniqueWords(const string& source) {
     while (getline(stream, t, ' ')) {
         if (std::count(words.begin(), words.end(), t) == 0)
             words.push_back(t);
+        /*for (const string& word : words)
+            cout << word << " ";
+        cout << endl;*/
     }
 
     /*for (const string& word : words)
@@ -66,7 +69,7 @@ int main() {
     cout << "substring count: " << countSubstring(source, "is") << endl;
     cout << "words in source text: " << countInString(source) << endl;
     cout << "sentences in source text: " << countInString(source, '.') << endl;
-
+    cout << "unique word count: " << uniqueWords(source) << endl;
     cout << "avg. number of words per sentence: " << avgWordsInSentence(source) << endl;
     cout << "lexical density: " << lexicalDensity(source) << endl;
 }
