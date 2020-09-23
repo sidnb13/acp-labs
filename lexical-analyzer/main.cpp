@@ -20,12 +20,21 @@ int countSubstring(const string& str, const string& sub) {
 // this function takes in either a . or \\s whitespace as a delimiter,
 // eliminating the need for 2 separate functions for sentence/word count (so total function count is 5 not 6)
 
+bool isNumber(const string& s) {
+    for (char i : s)
+        if (isdigit(i) == false)
+            return false;
+    return true;
+}
+
 int countInString(const string& source, char delimiter=' ') {
     int count = 0;
     stringstream stream(source);
     string t;
-    while (getline(stream, t, delimiter))
-        count++;
+    while (getline(stream, t, delimiter)) {
+        if (!isNumber(t))
+            count++;
+    }
     return count;
 }
 
@@ -40,7 +49,7 @@ int uniqueWords(const string& source) {
     string t;
     vector<string> words;
     while (getline(stream, t, ' ')) {
-        if (std::count(words.begin(), words.end(), t) == 0)
+        if (std::count(words.begin(), words.end(), t) == 0 && !isNumber(t))
             words.push_back(t);
         /*for (const string& word : words)
             cout << word << " ";

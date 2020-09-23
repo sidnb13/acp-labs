@@ -68,10 +68,10 @@ RM = "/Users/sidbaskaran/Library/Application Support/JetBrains/Toolbox/apps/CLio
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/sidbaskaran/Desktop/adv-cs/lexical-analyzer
+CMAKE_SOURCE_DIR = /Users/sidbaskaran/Desktop/acp-labs/sales-data-1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/sidbaskaran/Desktop/adv-cs/lexical-analyzer/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/sidbaskaran/Desktop/acp-labs/sales-data-1/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sidbaskaran/Desktop/adv-cs/lexical-analyzer/cmake-build-debug/CMakeFiles /Users/sidbaskaran/Desktop/adv-cs/lexical-analyzer/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sidbaskaran/Desktop/acp-labs/sales-data-1/cmake-build-debug/CMakeFiles /Users/sidbaskaran/Desktop/acp-labs/sales-data-1/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sidbaskaran/Desktop/adv-cs/lexical-analyzer/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sidbaskaran/Desktop/acp-labs/sales-data-1/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -131,17 +131,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named lexical_analyzer
+# Target rules for targets named sales_data_1
 
 # Build rule for target.
-lexical_analyzer: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lexical_analyzer
-.PHONY : lexical_analyzer
+sales_data_1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sales_data_1
+.PHONY : sales_data_1
 
 # fast build rule for target.
-lexical_analyzer/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexical_analyzer.dir/build.make CMakeFiles/lexical_analyzer.dir/build
-.PHONY : lexical_analyzer/fast
+sales_data_1/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sales_data_1.dir/build.make CMakeFiles/sales_data_1.dir/build
+.PHONY : sales_data_1/fast
 
 main.o: main.cpp.o
 
@@ -149,7 +149,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexical_analyzer.dir/build.make CMakeFiles/lexical_analyzer.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sales_data_1.dir/build.make CMakeFiles/sales_data_1.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -158,7 +158,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexical_analyzer.dir/build.make CMakeFiles/lexical_analyzer.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sales_data_1.dir/build.make CMakeFiles/sales_data_1.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -167,7 +167,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexical_analyzer.dir/build.make CMakeFiles/lexical_analyzer.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sales_data_1.dir/build.make CMakeFiles/sales_data_1.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -178,7 +178,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... lexical_analyzer"
+	@echo "... sales_data_1"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

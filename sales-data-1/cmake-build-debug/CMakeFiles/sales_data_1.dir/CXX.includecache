@@ -6,13 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/Users/sidbaskaran/Desktop/adv-cs/lexical-analyzer/main.cpp
+/Users/sidbaskaran/Desktop/acp-labs/sales-data-1/main.cpp
+cstdlib
+-
 iostream
 -
-string
--
-sstream
--
-vector
+fstream
 -
 
