@@ -23,7 +23,7 @@ int main() {
     int salesArrayCount = 0;
     SALESREC* s[40];
 
-    infile.open("SalesData.txt", ifstream::in);
+    infile.open("/Users/sidbaskaran/Desktop/adv-cs/sales-data-1/SalesData.txt", ifstream::in);
 
     if (infile.is_open()) {
         int   c=0;
@@ -54,9 +54,10 @@ int main() {
         s[i] = &salesArr[i];
 
     simpleSortTotal(s, salesArrayCount);
+    simpleSortTotal(s, salesArrayCount);
 
     for (i = 0; i < salesArrayCount; i++)
-        cout << "Record: " << s[i]->date <<", " << s[i]->region << ", "
+        cout << "Record: " << s[i]->date << ", " << s[i]->region << ", "
         << s[i]->rep << ", " << s[i]->item << ", " << s[i]->units
         << ", " << s[i]->unitCost << ", " << s[i]->Total << endl;
 
@@ -64,15 +65,21 @@ int main() {
 
 // arguments will be an array of pointers and a count
 void simpleSortTotal(SALESREC* s[40], int c) {
-    int minIdx = 0;
-    for (int i = 0; i < c; i++) {
-        for (int j = i+1; j < c; j++)
-            // total pointed at by i < total pointed at by j
-            if (s[j] < s[minIdx])
-                minIdx = j;
-        // swap pointer to record I with pointer to record j
-        SALESREC * temp = s[minIdx];
-        *s[minIdx] = *s[i];
-        *s[i] = *temp;
+    // implements a selection sort
+    int min_idx {};
+    for (int i {}; i < c - 1; i++) {
+        for (int j = i + 1; j < c; j++) {
+            if (s[min_idx]->Total > s[j]->Total)
+                min_idx = j;
+        }
+        std::swap(*s[min_idx], *s[i]);
+        //below is the original sort as indicated in instructions
+        /*
+         * for (int i = 0; i < c - 1; i++) {
+                for (int j = i + 1; j < c; j++) {
+                    if (s[i]->Total < s[j]->Total)
+                        std::swap(*s[i], *s[j]);
+                }
+         */
     }
 }
