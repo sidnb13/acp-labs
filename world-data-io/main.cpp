@@ -28,7 +28,7 @@ struct compare {
 
 int main() {
     fstream csv ("WPP2015_MORT_F07_1_LIFE_EXPECTANCY_0_BOTH_SEXES.csv");
-    if (!csv.is_open() || !csv.good())
+    if (!(csv.is_open() && csv.good()))
         exit(1);
 
     string token {};
