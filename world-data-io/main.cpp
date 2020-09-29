@@ -28,36 +28,36 @@ struct compare {
 
 int main() {
     fstream csv ("WPP2015_MORT_F07_1_LIFE_EXPECTANCY_0_BOTH_SEXES.csv");
-    if (csv.is_open()) {
-        string token {};
-        for (int i{}; i <= 28; i++) getline(csv, token);
-        const vector<string> developedRegions =
-                {"\"NORTHERN AMERICA\"", "\"EUROPE\"","\"Australia/New Zealand\"","\"Japan\"","\"United States of America\""};
-        // replaces a hash map as would be used in Java
-        vector<tpl> developedCountries;
-        vector<tpl> allCountries;
-        // get all countries into appropriate vectors
-        while (getline(csv, token)) {
-            tpl c;
-            c.regionName = getStringAtLoc(token, 2);
-            c.age = stod(getStringAtLoc(token, 15));
-            allCountries.push_back(c);
-            if (count(developedRegions.begin(), developedRegions.end(), c.regionName))
-                developedCountries.push_back(c);
-        }
-        csv.close();
-        // sorting
-        std::sort(developedCountries.begin(), developedCountries.end(), compare());
-        std::sort(allCountries.begin(), allCountries.end(), compare());
-
-        for (int i = 0; i < developedCountries.size(); i++) {
-            if (developedCountries.at(i).regionName == "\"United States of America\"")
-                cout << "The US is ranked " << i + 1 << "th " << "of all developed regions." << endl;
-        }
-        for (int i = 0; i < allCountries.size(); i++) {
-            if (allCountries.at(i).regionName == "\"United States of America\"")
-                cout << "The US is ranked " << i + 1 << "th " << "overall." << endl;
-        }
+    if (!csv.is_open() || !csv.good())
+        exit(1);
+    
+    string token {};
+    for (int i{}; i <= 28; i++) getline(csv, token);
+    const vector<string> developedRegions =
+            {"\"NORTHERN AMERICA\"", "\"EUROPE\"","\"Australia/New Zealand\"","\"Japan\"","\"United States of America\""};
+    // replaces a hash map as would be used in Java
+    vector<tpl> developedCountries;
+    vector<tpl> allCountries;
+    // get all countries into appropriate vectors
+    while (getline(csv, token)) {
+        tpl c;
+        c.regionName = getStringAtLoc(token, 2);
+        c.age = stod(getStringAtLoc(token, 15));
+        allCountries.push_back(c);
+        if (count(developedRegions.begin(), developedRegions.end(), c.regionName))
+            developedCountries.push_back(c);
     }
-    else exit(1);
+    csv.close();
+    // sorting
+    std::sort(developedCountries.begin(), developedCountries.end(), compare());
+    std::sort(allCountries.begin(), allCountries.end(), compare());
+
+    for (int i = 0; i < developedCountries.size(); i++) {
+        if (developedCountries.at(i).regionName == "\"United States of America\"")
+            cout << "The US is ranked " << i + 1 << "th " << "of all developed regions." << endl;
+    }
+    for (int i = 0; i < allCountries.size(); i++) {
+        if (allCountries.at(i).regionName == "\"United States of America\"")
+            cout << "The US is ranked " << i + 1 << "th " << "overall." << endl;
+    }
 }
