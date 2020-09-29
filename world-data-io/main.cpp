@@ -3,7 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <cstdlib>
+#include <cstdio>
 
 using namespace std;
 
@@ -30,9 +30,10 @@ int main() {
     fstream csv ("WPP2015_MORT_F07_1_LIFE_EXPECTANCY_0_BOTH_SEXES.csv");
     if (!csv.is_open() || !csv.good())
         exit(1);
-    
+
     string token {};
     for (int i{}; i <= 28; i++) getline(csv, token);
+
     const vector<string> developedRegions =
             {"\"NORTHERN AMERICA\"", "\"EUROPE\"","\"Australia/New Zealand\"","\"Japan\"","\"United States of America\""};
     // replaces a hash map as would be used in Java
@@ -54,10 +55,10 @@ int main() {
 
     for (int i = 0; i < developedCountries.size(); i++) {
         if (developedCountries.at(i).regionName == "\"United States of America\"")
-            cout << "The US is ranked " << i + 1 << "th " << "of all developed regions." << endl;
+            printf("The US is rank #%d of all developed regions.\n", i+1);
     }
     for (int i = 0; i < allCountries.size(); i++) {
         if (allCountries.at(i).regionName == "\"United States of America\"")
-            cout << "The US is ranked " << i + 1 << "th " << "overall." << endl;
+            printf("The US is rank #%d of all regions.\n", i+1);
     }
 }
