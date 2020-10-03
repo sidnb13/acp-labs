@@ -68,13 +68,11 @@ int main() {
 }
 
 bool isUpperString(const string& s) {
-    bool t;
-    for (const char& c : s) {
+    for (const char& c : s)
         if (isupper(c) || c == ' ' || c == '"')
-            t = true;
+            continue;
         else return false;
-    }
-    return t;
+    return true;
 }
 
 string getStringAtLoc(const string& s, int idx) {
