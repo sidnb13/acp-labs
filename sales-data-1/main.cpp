@@ -23,7 +23,7 @@ int main() {
     int salesArrayCount = 0;
     SALESREC* s[40];
 
-    infile.open("/Users/sidbaskaran/Desktop/adv-cs/sales-data-1/SalesData.txt", ifstream::in);
+    infile.open("SalesData.txt", ifstream::in);
 
     if (infile.is_open()) {
         int   c=0;
@@ -65,21 +65,9 @@ int main() {
 
 // arguments will be an array of pointers and a count
 void simpleSortTotal(SALESREC* s[40], int c) {
-    // implements a selection sort
-    int min_idx {};
     for (int i {}; i < c - 1; i++) {
-        for (int j = i + 1; j < c; j++) {
-            if (s[min_idx]->Total > s[j]->Total)
-                min_idx = j;
-        }
-        std::swap(*s[min_idx], *s[i]);
-        //below is the original sort as indicated in instructions
-        /*
-         * for (int i = 0; i < c - 1; i++) {
-                for (int j = i + 1; j < c; j++) {
-                    if (s[i]->Total < s[j]->Total)
-                        std::swap(*s[i], *s[j]);
-                }
-         */
+        for (int j = i + 1; j < c; j++)
+            if (s[i]->Total > s[j]->Total)
+                std::swap(*s[j], *s[i]);
     }
 }
