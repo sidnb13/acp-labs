@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <utility>
+#include <algorithm>
 #include <vector>
 
 using namespace std;
@@ -14,11 +14,11 @@ class Rec {
         string rep;
         string item;
         int units{};
-        double unitCost{};
-        double total{};
+        float unitCost{};
+        float total{};
 
     Rec (const string& d, const string& reg, const string& rp,
-        const string& i, const int& u, const double& c) {
+        const string& i, const int& u, const float& c) {
         date = d;
         region = reg;
         rep = rp;
@@ -26,7 +26,7 @@ class Rec {
         units = u;
         unitCost = c;
     }
-    void initTotal() {total = unitCost * units;}
+    void initTotal() {total = unitCost * (float) units;}
 };
 
 string parse(const string& s, const int& idx) {
@@ -37,31 +37,36 @@ string parse(const string& s, const int& idx) {
 
 int main() {
     string tkn {}, t {};
+    int i {};
     vector<Rec> list;
-    fstream txt("SalesData.txt");
+    fstream txt("SalesDataPt2.csv");
     getline(txt, tkn);
+    tkn.erase(remove(tkn.begin(), tkn.end(), ' '), tkn.end());
+
+    cout << tkn << ",Total" << endl;
 
     if (!(txt.good() && txt.is_open())) exit(0);
 
     while (getline(txt, tkn)) {
-        Rec res(
-                parse(tkn, 0),
-                parse(tkn, 1),
-                parse(tkn, 2),
-                parse(tkn, 3),
-                stoi(parse(tkn, 4)),
-                stod(parse(tkn, 5))
-        );
+        tkn.erase(remove(tkn.begin(), tkn.end(), ' '), tkn.end());
+
+        for (i = 0; i < tkn.length() - 1; ++i)
+            if (islower(tkn.at(i)) && isupper(tkn.at(i+1)))
+                tkn.insert(i+1, " ");
+
+        Rec res(parse(tkn, 0),parse(tkn, 1),parse(tkn, 2),parse(tkn, 3),
+                stoi(parse(tkn, 4)),stof(parse(tkn, 5)));
+
         res.initTotal();
         list.push_back(res);
     }
 
-    sort(list.begin(), list.end(), [](const Rec& a, const Rec& b) {
+    std::stable_sort(list.begin(), list.end(), [](const Rec& a, const Rec& b) {
         return a.total > b.total;
     });
 
     for (const Rec& x : list) {
-        cout << "Record: " << x.date << "," << x.region << "," << x.rep << ","
-        << x.item << ", " << x.units << ", " << x.unitCost << ", " << x.total << endl;
+        cout << x.date << "," << x.region << "," << x.rep << ","
+        << x.item << "," << x.units << "," << x.unitCost << "," << x.total << endl;
     }
 }
