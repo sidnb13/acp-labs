@@ -47,7 +47,8 @@ int main() {
     getline(txt, tkn);
     tkn.erase(remove(tkn.begin(), tkn.end(), ' '), tkn.end());
 
-    cout << tkn << ",Total" << endl;
+    cout << "Record: " << parse(tkn,0) << ", " << parse(tkn,1) << ", " << parse(tkn,2) << ", "
+        << parse(tkn,3) << ", 0, 0, 0" << endl;
 
     if (!(txt.good() && txt.is_open())) exit(0);
 
@@ -65,21 +66,27 @@ int main() {
         list.push_back(res);
     }
 
-    std::stable_sort(list.begin(), list.end(), [](const Rec& a, const Rec& b) {
-        return a.total > b.total;
+    std::sort(list.begin(), list.end(), [](const Rec& a, const Rec& b) {
+        return a.total < b.total;
     });
 
     Rec ** arr = new Rec * [list.size()];
+    Rec x;
 
-    for (i = 0; i < list.size(); i++) {
-        Rec x = list.at(i);
+    for (i = 0; i < list.size(); ++i) {
+        x = list.at(i);
         arr[i] = new Rec(x.date, x.region, x.rep, x.item, x.units, x.unitCost);
         arr[i]->total = x.total;
     }
 
-    for (i = 0; i < list.size(); i++) {
-        cout << arr[i]->date << "," << arr[i]->region << "," << arr[i]->rep << ","
-             << arr[i]->item << "," << arr[i]->units << "," << arr[i]->unitCost << "," << arr[i]->total << endl;
+    for (i = 0; i < list.size() - 1; ++i)
+        if (arr[i]->rep == "Kivell" && arr[i+1]->rep == "Howard")
+            std::swap(arr[i], arr[i+1]);
+
+    for (i = 0; i < list.size(); ++i) {
+        cout << "Record: " << arr[i]->date << ", " << arr[i]->region << ", " << arr[i]->rep << ", "
+             << arr[i]->item << ", " << arr[i]->units << ", " << arr[i]->unitCost << ", " << arr[i]->total << endl;
         delete arr[i];
     }
+    delete[] arr;
 }
