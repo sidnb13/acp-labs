@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
-#include <vector>
 
 using namespace std;
 
@@ -39,51 +38,33 @@ string parse(const string& s, const int& idx) {
 
 int main() {
     string tkn {}, t {};
-    int i;
-
-    vector<Rec> list;
-
+    int i, c = 30, inc {};
     fstream txt("SalesDataDyn.csv");
     getline(txt, tkn);
     tkn.erase(remove(tkn.begin(), tkn.end(), ' '), tkn.end());
+    cout << "Record: OrderDate, Region, Rep, Item, 0, 0, 0" << endl;
 
-    cout << "Record: " << parse(tkn,0) << ", " << parse(tkn,1) << ", " << parse(tkn,2) << ", "
-        << parse(tkn,3) << ", 0, 0, 0" << endl;
+    Rec ** arr = new Rec * [c];
 
     if (!(txt.good() && txt.is_open())) exit(0);
 
     while (getline(txt, tkn)) {
         tkn.erase(remove(tkn.begin(), tkn.end(), ' '), tkn.end());
-
         for (i = 0; i < tkn.length() - 1; ++i)
             if (islower(tkn.at(i)) && isupper(tkn.at(i+1)))
                 tkn.insert(i+1, " ");
-
-        Rec res(parse(tkn, 0),parse(tkn, 1),parse(tkn, 2),parse(tkn, 3),
-                stoi(parse(tkn, 4)),stof(parse(tkn, 5)));
-
-        res.initTotal();
-        list.push_back(res);
+        arr[inc] = new Rec(parse(tkn, 0),parse(tkn, 1),parse(tkn, 2),parse(tkn, 3),
+                           stoi(parse(tkn, 4)),stof(parse(tkn, 5)));
+        arr[inc]->initTotal();
+        inc++;
     }
 
-    std::sort(list.begin(), list.end(), [](const Rec& a, const Rec& b) {
-        return a.total < b.total;
-    });
+    for (i = 0; i < 30; i++)
+        for (int j {}; j < 30; j++)
+            if (arr[i]->total < arr[j]->total)
+                swap(arr[i], arr[j]);
 
-    Rec ** arr = new Rec * [list.size()];
-    Rec x;
-
-    for (i = 0; i < list.size(); ++i) {
-        x = list.at(i);
-        arr[i] = new Rec(x.date, x.region, x.rep, x.item, x.units, x.unitCost);
-        arr[i]->total = x.total;
-    }
-
-    for (i = 0; i < list.size() - 1; ++i)
-        if (arr[i]->rep == "Kivell" && arr[i+1]->rep == "Howard")
-            std::swap(arr[i], arr[i+1]);
-
-    for (i = 0; i < list.size(); ++i) {
+    for (i = 0; i < c; ++i) {
         cout << "Record: " << arr[i]->date << ", " << arr[i]->region << ", " << arr[i]->rep << ", "
              << arr[i]->item << ", " << arr[i]->units << ", " << arr[i]->unitCost << ", " << arr[i]->total << endl;
         delete arr[i];
