@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sidbaskaran/Desktop/adv-cs/inheritance/main.cpp
+stdlib.h
+-
+iostream
+-
+fstream
+-
+
