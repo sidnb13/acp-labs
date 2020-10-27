@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 using namespace std;
 
 class SalesRep {
@@ -45,7 +46,8 @@ void simpleSortTotal(SALESREC* s[], int c);
 int main()
 {
     ifstream infile;
-    char cNum[10] ;
+    char cNum[10];
+    char * tok {};
     SALESREC* salesArr[40];
     int salesArrayCount = 0;
     SALESREC* s[40];
@@ -63,9 +65,9 @@ int main()
             infile.getline(salesArr[c]->rep, 256, ',');
             infile.getline(salesArr[c]->item, 256, ',');
             infile.getline(cNum, 256, ',');
-            salesArr[c]->units = stoi(cNum);
+            salesArr[c]->units = atoi(cNum); //NOLINT
             infile.getline(cNum, 256, '\n');
-            inputUnitCost = stof(cNum);
+            inputUnitCost = atof(cNum); //NOLINT
             salesArr[c]->setUnitCost(inputUnitCost);  //store in salesArr[c]
             c++;
         }
