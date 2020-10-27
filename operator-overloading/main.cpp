@@ -83,7 +83,7 @@ int main() {
             if (salesArr[i] == salesArr[j] && i != j) {
                 salesArr[i]->units += salesArr[j]->units;
                 salesArr[i]->setUnitCost(salesArr[i]->getUnitCost() + salesArr[j]->getUnitCost());
-                delete salesArr[j];
+                delete std::remove(begin(salesArr), end(salesArr), salesArr[j]);
             }
         }
     }
