@@ -26,13 +26,9 @@ public:
     int units;
 
     void setUnitCost(float nc) {unitCost = nc;}
-
     [[nodiscard]] float getUnitCost() const {return unitCost;}
-
     [[nodiscard]] float Total() const {return  unitCost * (float) units;}
-
     void operator +(const SALESREC& r) {units += r.units;}
-
     bool operator ==(const SALESREC& r) {
         return r.item == this->item && r.date == this->date && r.rep == this->rep;
     }
@@ -40,15 +36,9 @@ public:
 
 ostream &operator <<(ostream &o, const SALESREC& r) {
     return o << "Record: " << r.date << ", " << r.region << ", "
-               << r.rep << ", " << r.item << ", " << r.units << ", "
+        << r.rep << ", " << r.item << ", " << r.units << ", "
                << r.getUnitCost() << ", " << r.Total() << endl;
 }
-
-void simpleSortTotal(SALESREC* s[], int c);
-
-struct compare {
-    bool operator() (SALESREC lhs, SALESREC rhs) const {return lhs.Total() < rhs.Total();}
-};
 
 int main() {
     ifstream infile;
@@ -61,7 +51,6 @@ int main() {
     if (infile.is_open()) {
         int c {};
         float inputUnitCost;
-
         while (infile.good()) {
             salesArr[c] = new SALESREC();
             infile.getline(salesArr[c]->date, 256, ',');
@@ -79,7 +68,11 @@ int main() {
         infile.close();
     } else {cout << "Error opening file";}
 
-    set<SALESREC, compare> set;
+    [[maybe_unused]] auto comp = [](SALESREC l, SALESREC r) {
+        return l.Total() < r.Total();
+    };
+    set<SALESREC, decltype(comp)> set;
+
     cout << " Unsorted Sales Record Array\n" ;
     for (i=0; i < salesArrayCount; i++)
         cout << *salesArr[i];
