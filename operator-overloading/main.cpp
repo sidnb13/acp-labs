@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <set>
 using namespace std;
 
 class SalesRep {
@@ -30,7 +31,7 @@ public:
 
     [[nodiscard]] float Total() const {return  unitCost * (float) units;}
 
-    void operator +(const SALESREC& r) {units++;}
+    void operator +(const SALESREC& r) {units += r.units;}
 
     bool operator ==(const SALESREC& r) {
         return r.item == this->item && r.date == this->date && r.rep == this->rep;
@@ -45,12 +46,23 @@ ostream &operator <<(ostream &o, const SALESREC& r) {
 
 void simpleSortTotal(SALESREC* s[], int c);
 
+struct compare {
+    bool operator() (SALESREC lhs, SALESREC rhs) const {
+        if(lhs.Total() < rhs.Total())
+            return true;
+        else if(lhs.Total() > rhs.Total())
+            return false;
+        else
+            return lhs.Total() < rhs.Total();
+    }
+};
+
 int main() {
     ifstream infile;
     char cNum[10];
+    int i {};
     SALESREC* salesArr[40];
     int salesArrayCount = 0;
-    SALESREC* s[40];
 
     infile.open ("SalesDataP5.csv");
     if (infile.is_open()) {
@@ -74,36 +86,29 @@ int main() {
         infile.close();
     } else {cout << "Error opening file";}
 
+    set<SALESREC, compare> set;
     cout << " Unsorted Sales Record Array\n" ;
-    for (int i=0; i < salesArrayCount; i++)
+    for (i=0; i < salesArrayCount; i++)
         cout << *salesArr[i];
-
-    for (int i {}; i < salesArrayCount; ++i) {
+    for (i = 0; i < salesArrayCount; ++i) {
         for (int j {}; j < salesArrayCount; ++j) {
             if (salesArr[i] == salesArr[j] && i != j) {
-                salesArr[i]->units += salesArr[j]->units;
+                *salesArr[i] + *salesArr[j];
                 salesArr[i]->setUnitCost(salesArr[i]->getUnitCost() + salesArr[j]->getUnitCost());
-                delete std::remove(begin(salesArr), end(salesArr), salesArr[j]);
             }
         }
+        set.insert(*salesArr[i]);
     }
 
-    for (int i=0; i < salesArrayCount; i++)
-        s[i] = salesArr[i];
+    SALESREC tempArr[set.size()];
+    copy(set.begin(), set.end(), tempArr);
+    SALESREC* s[set.size()];
+    for (i = 0; i < set.size(); ++i) {s[i] = &tempArr[i];}
 
-    simpleSortTotal (s, salesArrayCount);
     cout << " - - - - - - - - - - - -\n" ;
     cout << " Sorted Sales Record Array\n";
-    for (int i=0; i < salesArrayCount; i++)
+    for (i=0; i < set.size(); i++)
         cout << *s[i];
-
-    for (int i=0; i < salesArrayCount; i++)
+    for (i=0; i < salesArrayCount; i++)
         delete salesArr[i];
-}
-
-void simpleSortTotal(SALESREC* s[], int c) {
-    for (int i=0; i < c; i++)
-        for (int j=i; j < c; j++)
-            if (s[i]->Total() > s[j]->Total())
-                swap(s[i], s[j]);
 }
