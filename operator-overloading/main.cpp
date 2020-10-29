@@ -47,14 +47,7 @@ ostream &operator <<(ostream &o, const SALESREC& r) {
 void simpleSortTotal(SALESREC* s[], int c);
 
 struct compare {
-    bool operator() (SALESREC lhs, SALESREC rhs) const {
-        if(lhs.Total() < rhs.Total())
-            return true;
-        else if(lhs.Total() > rhs.Total())
-            return false;
-        else
-            return lhs.Total() < rhs.Total();
-    }
+    bool operator() (SALESREC lhs, SALESREC rhs) const {return lhs.Total() < rhs.Total();}
 };
 
 int main() {
