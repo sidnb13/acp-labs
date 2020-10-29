@@ -91,12 +91,9 @@ int main() {
     for (i=0; i < salesArrayCount; i++)
         cout << *salesArr[i];
     for (i = 0; i < salesArrayCount; ++i) {
-        for (int j {}; j < salesArrayCount; ++j) {
-            if (salesArr[i] == salesArr[j] && i != j) {
+        for (int j {}; j < salesArrayCount; ++j)
+            if (salesArr[i] == salesArr[j] && i != j)
                 *salesArr[i] + *salesArr[j];
-                salesArr[i]->setUnitCost(salesArr[i]->getUnitCost() + salesArr[j]->getUnitCost());
-            }
-        }
         set.insert(*salesArr[i]);
     }
 
