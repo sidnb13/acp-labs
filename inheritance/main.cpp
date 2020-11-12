@@ -47,7 +47,6 @@ int main()
 {
     ifstream infile;
     char cNum[10];
-    char * tok {};
     SALESREC* salesArr[40];
     int salesArrayCount = 0;
     SALESREC* s[40];
