@@ -3,6 +3,7 @@ Header file for single linked list class library
 */
 
 #include <string>
+#include <cstring>
 #include <iostream>
 using namespace std;
 
