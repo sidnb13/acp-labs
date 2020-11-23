@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sidbaskaran/Desktop/adv-cs/lasalle/main.cpp
+iostream
+-
+fstream
+-
+cstdlib
+-
+slist.h
+/Users/sidbaskaran/Desktop/adv-cs/lasalle/slist.h
+cmath
+-
+vector
+-
+chrono
+-
+
+/Users/sidbaskaran/Desktop/adv-cs/lasalle/slist.h
+string
+-
+iostream
+-
+

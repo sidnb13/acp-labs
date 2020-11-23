@@ -2,31 +2,52 @@
 Header file for single linked list class library
 */
 
+#include <string>
+#include <iostream>
+using namespace std;
 
-// add(value)				//Adds a new value to the end of this list.
+struct Airport {
+    char code[5]{};
+    double longitude{};
+    double latitude{};
 
-// clear()					//Removes all elements from this list.
+    Airport() = default;
 
-// equals(list)				//Returns true if the two lists contain the same elements in the same order.
+    [[maybe_unused]] Airport(const char* cod, double lat, double lon) {
+        strcpy(code, cod);
+        latitude = lat;
+        longitude = lon;
+    }
 
-//get(index)				//Returns the element at the specified index in this list.
+    void dsp() {cout << "{" << code << ", (" << latitude << ", " << longitude << ")}" << endl;}
+};
 
-//insert(index, value)		//Inserts the element into this list before the specified index.
+struct Node {
+    Airport* dat;
+    Node* next;
+};
 
-//exchg(index1, index2)		//Switches the payload data of specified indexex.
+class slist {
+public:
+    int length{};
+    Node* head{};
+    Node* tail{};
 
-//swap(index1,index2)		//Swaps node located at index1 with node at index2
-
-// isEmpty()				//Returns true if this list contains no elements.
-
-// mapAll(fn)				//Calls the specified function on each element of the linkedlist in ascending index order.
-
-// remove(index)			//Removes the element at the specified index from this list.
-
-// set(index, value)		//Replaces the element at the specified index in this list with a new value.
-
-// size()					//Returns the number of elements in this list.
-
-// subList(start, length)	//Returns a new list containing elements from a sub-range of this list.
-
-// toString()				//Converts the list to a printable string representation.
+    slist();
+    slist(slist* s, int i1, int i2); //added in to help with sublist method
+    ~slist();
+    void add(Airport* a);
+    //void remove(char cod[], double lat, double lon);
+    [[maybe_unused]] void clear();
+    [[maybe_unused]] [[nodiscard]] bool equals(const slist& s) const;
+    [[nodiscard]] Node* get(int idx) const;
+    [[maybe_unused]] void insert(int idx, Airport* a);
+    void exchg(int i1, int i2) const;
+    [[maybe_unused]] void swap(int i1, int i2);
+    [[maybe_unused]] [[nodiscard]] bool isEmpty() const;
+    [[maybe_unused]] Node* remove(int idx);
+    [[maybe_unused]] void set(int idx, Airport* a) const;
+    [[nodiscard]] int size() const;
+    [[maybe_unused]] slist subList(int s, int e);
+    [[maybe_unused]] [[nodiscard]] string toString() const;
+};

@@ -1,36 +1,161 @@
 #include "slist.h"
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <sstream>
 
-/*
-Class Library File
-*/
+using namespace std;
 
+slist::slist() {
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->length = 0;
+}
 
-// Constructor
+slist::slist(slist *s, int i1, int i2) {
+    this->head = s->get(i1);
+    for(int i = i1 + 1; i < i2; i++)
+        this->add(s->get(i1)->dat);
+    tail = get(i2 - i1 - 1);
+}
 
-// Destructor
+slist::~slist() {
+    Node* current = this->head;
+    Node* next;
+    while (current != nullptr) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+}
 
-// add(value)				//Adds a new value to the end of this list.
+void slist::add(Airport* a) {
+    Node* toAdd = new Node;
+    toAdd->dat = a;
+    toAdd->next = nullptr;
+    if (length != 0) get(length-1)->next = toAdd;
+    else head = toAdd;
+    toAdd->next = tail;
+    length++;
+}
 
-// clear()					//Removes all elements from this list.
+[[maybe_unused]] void slist::clear() {
+    Node* current = this->head;
+    while(current->next != nullptr) {
+        Node* tmp = current;
+        delete tmp;
+        current = current->next;
+    }
+    this->head = nullptr;
+    this->tail = nullptr;
+    this->length = 0;
+}
 
-// equals(list)				//Returns true if the two lists contain the same elements in the same order.
+[[maybe_unused]] bool slist::equals(const slist& s) const {
+    if(s.length != length) return false;
+    Node* cThis = this->head;
+    Node* cOther = s.head;
+    while(cThis->next != nullptr) {
+        Airport* a = cThis->dat;
+        Airport* b = cOther->dat;
+        if(!(a->code == b->code && a->longitude == b->longitude && a->latitude == b->latitude))
+            return false;
+        cThis = cThis->next;
+        cOther = cOther->next;
+    }
+    if(cThis->next != cOther->next)
+        return false;
+    else return true;
+}
 
-//get(index)				//Returns the element at the specified index in this list.
+Node* slist::get(int idx) const {
+    Node* curr = this->head;
+    for (int i = 0; i < idx; ++i)
+        curr = curr->next;
+    return curr;
+}
 
-//insert(index, value)		//Inserts the element into this list before the specified index.
+[[maybe_unused]] void slist::insert(int idx, Airport* a) {
+    Node *n = new Node;
+    n->dat = a;
+    if (idx == 0) {
+        n->next = this->head;
+        head = n;
+    } else {
+        n->next = get(idx);
+        get(idx-1)->next = n;
+    }
+    length++;
+}
 
-//exchg(index1, index2)		//Switches the payload data of specified indexex.
+void slist::exchg(int i1, int i2) const {
+    Airport* a = get(i1)->dat;
+    get(i1)->dat = get(i2)->dat;
+    get(i2)->dat = a;
+}
 
-//swap(index1,index2)		//Swaps node located at index1 with node at index2
+[[maybe_unused]] void slist::swap(int i1, int i2) {
+    Node *n1, *n2, *p1, *p2, *t;
 
-// isEmpty()				//Returns true if this list contains no elements.
+    if ((i1 <= 0 || i1 > this->size()) || (i2 <= 0 || i2 > this->size()))
+        return;
+    if (i1 == i2)
+        return;
 
-// remove(index)			//Removes the element at the specified index from this list.
+    n1 = get(i1);
+    p1 = i1 > 0 ? get(i1 - 1) : nullptr;
+    n2 = get(i2);
+    p2 = i2 > 0 ? get(i2 - 1) : nullptr;
 
-// set(index, value)		//Replaces the element at the specified index in this list with a new value.
+    if (!(n1 == nullptr || n2 == nullptr)) {
+        if (p1 != nullptr)
+            p1->next = n2;
+        if (p2 != nullptr)
+            p2->next = n1;
+        t = n1->next;
+        n1->next = n2->next;
+        n2->next = t;
 
-// size()					//Returns the number of elements in this list.
+        if (p1 == nullptr)
+            head = n2;
+        else if (p2 == nullptr)
+            head = n1;
+    }
+}
 
-// subList(start, length)	//Returns a new list containing elements from a sub-range of this list.
+[[maybe_unused]] bool slist::isEmpty() const {return this->length == 0 && this->head == nullptr && this->tail == nullptr;}
 
-// toString()				//Converts the list to a printable string representation.
+[[maybe_unused]] Node* slist::remove(int idx) {
+    if (idx != 0) {
+        Node* temp = get(idx);
+        get(idx-1)->next = get(idx+1);
+        length--;
+        return temp;
+    } else {
+        Node* temp = head;
+        head = get(1);
+        length--;
+        return temp;
+    }
+}
+
+[[maybe_unused]] void slist::set(int idx, Airport* a) const {get(idx)->dat = a;}
+
+int slist::size() const {return length;}
+
+[[maybe_unused]] slist slist::subList(int s, int e) {return slist(this, s, e);}
+
+[[maybe_unused]] string slist::toString() const {
+    if (this->length == 0)
+        return "\n";
+    Node *curr = this->head;
+    stringstream s;
+    int c = 1;
+    for (int i = 0; i < length; ++i) {
+        Airport* data = curr->dat;
+        s << c << ": {" << data->code << ", (" << data->latitude << ", " << data->longitude << ")}" << endl;
+        curr = curr->next;
+        c++;
+    }
+    return s.str();
+}
