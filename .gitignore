@@ -1,2 +1,6 @@
 .DS_Store
 .idea/
+*/cmake-build-debug/*
+!*/cmake-build-debug/*.csv
+!*/cmake-build-debug/*.txt
+!*/cmake-build-debug/*.dat
