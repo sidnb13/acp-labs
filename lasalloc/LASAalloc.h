@@ -6,32 +6,27 @@
 	 *    Make any changes only in the provided block.
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
 #ifndef LALLOC_H
 #define LALLOC_H
-
 
 using namespace std;
 
 typedef unsigned char byte_t;
 
 struct block {
-	struct block *prev_block;
-	struct block *next_block;
+	struct block *prev;
+	struct block *next;
 	int size;
-	bool freeFlag;					//Wasteful of memory but simple (in reality a bit field)
-	void *this_block_data;
+	void * space;
 };
 
 class LASAalloc {
-	void* 	bufferBase= nullptr;
+	void* 	bufferBase = nullptr;
 	int		bufferSize = 0;
 	block*	freeList = nullptr;
 	
 	// Helper function
-	void display_node(struct block *p);
-	void* findFit(int size);
-	void* split(block* target, int size);
+	static void display_node(struct block *p);
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 		Student supplied local instance variables
@@ -51,10 +46,10 @@ public:
 	LASAalloc();
 	~LASAalloc();
 
-	void* lalloc(int size);
+	void * lalloc(int x);
 	void* lfree(void* userBlock);
 
-	void display(struct block *begin);
+    static void printFreeList();
 	void* brk(int size);
 };
 

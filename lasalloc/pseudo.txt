@@ -1,0 +1,66 @@
+void lalloc(int x) {
+    header = free_list_header;
+
+    while (header != nullptr) {
+        if (x > header.size) {
+            header = header.next;
+            if (header == nullptr)
+                return nullptr; //preserves free list, no allocation
+            continue; //check next header for fit
+        }
+
+        if (x + 32 >= header.size) { //hijack
+            header.size = x;
+
+            if (header.next == nullptr && header.prev == nullptr) {
+                free_list_header == null;
+            } else if (header.next == nullptr && header.prev != nullptr) { //at end of list
+                header.prev.next == nullptr;
+                header.prev == nullptr;
+            } else if (header.next != nullptr && header.prev == nullptr) { //head of list
+                header.next.prev == nullptr;
+                free_list_header = header.next;
+                header.next == nullptr;
+            } else {
+                header.next.prev = header.prev;
+                header.prev.next = header.next;
+                header.prev == nullptr;
+                header.next == nullptr;
+            }
+
+        } else {
+            header.size = x;
+            
+            new_header = header + 32 + x;
+            new_header.size = header.size - 32 - x;
+
+            if (header.next == nullptr && header.prev == nullptr) {
+                new_header.next = nullptr;
+                new_header.prev = nullptr;
+                free_list_header = new_header;
+            } else if (header.next == nullptr && header.prev != nullptr) { //at end of list
+                new_header.next = nullptr;
+                new_header.prev = header.prev;
+            } else if (header.next != nullptr && header.prev == nullptr) { //head of list
+                new_header.next = header.next;
+                new_header.prev = nullptr;
+                free_list_header = new_header;
+            } else {
+                new_header.next = header.next;
+                new_header.prev = header.prev;
+            }
+        }
+
+        return header;
+    }
+
+    return nullptr;
+}
+
+block lfree(block alloc) {
+
+}
+
+void merge() {
+    
+}
