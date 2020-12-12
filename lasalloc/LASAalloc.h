@@ -21,6 +21,7 @@ struct block {
 };
 
 class LASAalloc {
+    block *free_list_header;
 	void* 	bufferBase = nullptr;
 	int		bufferSize = 0;
 	block*	freeList = nullptr;
@@ -35,23 +36,24 @@ class LASAalloc {
 	 * 		These must only be private.
 	 */
 
-private:
-    int rounded(int x);
+    private:
+        int rounded(int x);
+        void merge(block * p, block * n);
 
 	/*
 	 *    End student changes 
 	 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-public:
-	LASAalloc();
-	~LASAalloc();
+    public:
+        LASAalloc();
+        ~LASAalloc();
 
-	void * lalloc(int x);
-	void lfree(void* spc);
+        void * lalloc(int x);
+        void lfree(void* spc);
 
-	void printFreeList();
-	void* brk(int size);
+        void printFreeList();
+        void* brk(int size);
 };
 
 #endif // LALLOC_H

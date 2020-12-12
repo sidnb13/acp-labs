@@ -7,20 +7,19 @@
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include<iostream>
-#include<stdlib.h>
+#include<cstdlib>
 #include "LASAalloc.h"
 
 // Defines for LASAalloc buffer simulation.  
 // Keep it simple, no changes to program break
-#define INITIAL_MALLOC_SIZE 1000 //100000
-#define MAX_MALLOC_SIZE 100000 //100000
+#define INITIAL_MALLOC_SIZE 100000 //100000
 
 using namespace std;
 
-block *free_list_header;
+
 typedef unsigned char BYTE_t;
 
-BYTE_t buffer[MAX_MALLOC_SIZE];
+//BYTE_t buffer[MAX_MALLOC_SIZE];
 
 LASAalloc::LASAalloc() {
 	brk(INITIAL_MALLOC_SIZE);
@@ -48,37 +47,42 @@ LASAalloc::LASAalloc() {
 	cout<<"integer size " << sizeof(int) << endl;
 	
 	display_node(freeList);
+
+    cout << endl;
 }
 
 LASAalloc::~LASAalloc() { //TODO destructor
-
+    free_list_header = nullptr;
+    free(bufferBase);
 }
 
 void LASAalloc::display_node(struct block *p) { //NOLINT
-    cout << "Prev: " << p->prev;
+    cout << "Record: " << p;
+    cout << "\tPrev: " << p->prev;
     cout << "\tNext: " << p->next;
     cout << "\tSize: " << p->size;
-    cout << "\tThis: " << p->space << endl;
-    cout << endl;
+    cout << "\tSpace: " << p->space << endl;
 }
 
 void LASAalloc::printFreeList() {
 	block * begin = free_list_header;
     struct block *p;
-	if(begin == nullptr) {
+	if (begin == nullptr) {
 		cout<<"List is empty\n\n\n";
 		return;
 	}
 	p = begin;
+
 	cout<<"List is:\n";
+    //cout << "Global header: "; display_node(free_list_header);
 	while(p != nullptr) {
 		display_node(p);
 		p=p->next;
 	}
-	cout<<"\n";
+	cout << endl;
 }
 
-int LASAalloc::rounded(int x) {return (int) round(x/8) * 8;} //NOLINT
+int LASAalloc::rounded(int x) {return ((x + 7) & (-8));} //NOLINT
 
 void* LASAalloc::lalloc(int x) { //NOLINT
     block * header = free_list_header;
@@ -115,7 +119,7 @@ void* LASAalloc::lalloc(int x) { //NOLINT
             }
 
         } else {
-            block * new_header = header + 32 + x;
+            auto * new_header = (struct block *) ((BYTE_t *) header + 32 + x);
             new_header->size = header->size - 32 - x;
             new_header->space = (BYTE_t *) new_header + 32;
 
@@ -135,10 +139,16 @@ void* LASAalloc::lalloc(int x) { //NOLINT
                 new_header->prev = header->prev;
             }
 
+            header->size = x;
+
             //cout << "new header size, non hijack: " << new_header->size << endl;
         }
 
-        header->size = x;
+
+
+       /* cout << "header size: " << header->size << endl;
+        auto * str = (struct block *) ((BYTE_t *) header->space - 32);
+        cout << "struct from space size: " << str->size << endl;*/
 
         return header->space;
 
@@ -149,8 +159,72 @@ void* LASAalloc::lalloc(int x) { //NOLINT
 
 }
 
-void LASAalloc::lfree(void * spc) { //NOLINT
+void LASAalloc::merge(block * p, block * n) { //NOLINT
+    p->next = n->next;
+    if (n->next != nullptr)
+        n->next->prev = p;
+    p->size = p->size + n->size + 32;
+}
 
+void LASAalloc::lfree(void * spc) {
+    //cout << "Free list header: " << free_list_header << endl;
+
+    block * header = free_list_header;
+    auto * alloc = (struct block *) ((BYTE_t *) spc - 32); //memory to be freed
+
+    //cout << "alloc: " << alloc->prev << endl;
+
+    if (header == nullptr) { //initially empty list no merge
+        free_list_header = alloc;
+        //cout << "initially empty list" << endl;
+        return;
+    }
+
+    while (true) {
+        if (header->prev == nullptr) { //initially head (includes singular)
+            if (alloc->space < header->space) {
+                alloc->next = header;
+                header->prev = alloc;
+                free_list_header = alloc;
+                //cout << "initially head (includes singular)" << endl;
+                break;
+            }
+        } else if (header->next == nullptr) { //initially end (singular)
+            if (alloc->space < header->space) {
+                alloc->next = header;
+                alloc->prev = header->prev;
+                header->prev->next = alloc;
+                header->prev = alloc;
+                //cout << "initially end (singular)" << endl;
+            } else {
+                alloc->prev = header;
+                header->next = alloc;
+            }
+            break;
+        } else if (header->prev != nullptr && header->next != nullptr) { //initially nonsingular between
+            if (alloc->space < header->space) {
+                alloc->next = header;
+                alloc->prev = header->prev;
+                header->prev->next = alloc;
+                header->prev = alloc;
+                break;
+            }
+        }
+
+        header = header->next; //none of cases satisfy
+    }
+
+    block * p;
+    block * n;
+
+    if (alloc->next != nullptr && (struct block *) ((BYTE_t *) alloc->space + alloc->size) == alloc->next) { // right-merge
+        //cout << "Merge-R" << endl;
+        merge(alloc, alloc->next);
+    }
+    if (alloc->prev != nullptr && (struct block *) ((BYTE_t *) alloc->prev->space + alloc->prev->size) == alloc) {// left-merge
+        //cout << "Merge-L" << endl;
+        merge(alloc->prev, alloc);
+    }
 }
 
 /*
@@ -171,7 +245,6 @@ void * LASAalloc::brk(int size) {
 			cout<<"buffer already locked\n";
 			return nullptr;
 		}
-		
 	}
 	return bufferSize + (char*) bufferBase;
 }

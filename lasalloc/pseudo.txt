@@ -58,45 +58,52 @@ void lalloc(int x) {
 void merge(block p, block n) {
     p->next = n->next;
     n->next->prev = p;
-    p->size = c->size + 32;
+    p->size = p->size + n->size + 32;
 }
 
 void lfree(void spc) {
     block header = free_list_header;
-    block alloc = (struct block *) (spc - 32);
+    block alloc = (struct block *) (spc - 32); //memory to be freed
 
-    while (header != nullptr) {
-        block p = header->prev;
-        block n = header->next;
-        
-        if (alloc->space > p->space && alloc->space < n->space) {
-            alloc->next = n;
-            alloc->prev = p;
-            p->next = alloc;
-            n->prev = alloc;
-        } else if (alloc->space < n->space && p == nullptr) {
-            alloc->next = n;
-            n->prev = alloc;
-            free_list_header = alloc;
-        } else if (alloc->space > p->space && n == nullptr) {
-            alloc->prev = p;
-            p->next = alloc;
-        } else {
-            free_list_header = alloc;
-        }
-    }
-
-    bool merge_left = alloc->prev->space + alloc->prev->size == alloc;
-    bool merge_right = alloc->space + alloc->size == alloc->next;
-
-    if ((p != nullptr && n != nullptr) && (merge_left && merge_right)) {
-        merge(alloc->prev, alloc);
-        merge(alloc->prev, alloc->next);
-    } else if (alloc->prev == nullptr && alloc->next != nullptr && merge_right) {
-        merge(alloc, alloc->next);
-    } else if (alloc->prev != nullptr && alloc->next == nullptr && merge_left) {
-        merge(alloc->prev, alloc);
-    } else {
+    if (header == nullptr) { //initially empty list no merge
         free_list_header = alloc;
+        return;
     }
+    
+    while (true) {        
+        if (header->prev == nullptr) { //initially head (includes singular)
+            if (alloc->space < header->space) {
+                alloc->next = header;
+                header->prev = alloc;
+                free_list_header = alloc;
+                break;
+            }
+        } else if (header->next == nullptr) { //initially end (singular)
+            if (alloc->space < header->space) {
+                alloc->next = header;
+                header->prev = alloc;
+                alloc->prev = header->prev;
+                alloc->prev->next = alloc;
+            } else {
+                alloc->prev = header;
+                header->next = alloc;
+            }
+            break;
+        } else if (header->prev != nullptr && header->next != nullptr) { //initially nonsingular between
+            if (alloc->space < header->space) { 
+                alloc->next = header;
+                header->prev = alloc;
+                alloc->prev = header->prev;
+                alloc->prev->next = alloc;
+                break;
+            }
+        }
+        
+        header = header->next; //none of cases satisfy
+    }
+    
+    if (alloc->next != nullptr && alloc->space + alloc->size == alloc->next) // right-merge
+        merge(alloc, alloc->next);
+    if (alloc->prev != nullptr && alloc->prev->space + alloc->prev->size == alloc) // left-merge
+        merge(alloc->prev, alloc);
 }

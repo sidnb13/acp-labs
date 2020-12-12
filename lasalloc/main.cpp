@@ -7,7 +7,7 @@
  * Do not change anything else in this file
  */ 
 
-#define TEST
+#define SIMPLETEST2
 
 #include <unistd.h>
 #include <cstdlib>
@@ -19,20 +19,25 @@
 
 int main() {
     LASAalloc lasa;
-    auto * x1 = lasa.lalloc(100);
+
+    cout << "Allocating" << endl << endl;
+
+    auto * x1 = lasa.lalloc(8);
     lasa.printFreeList();
-    auto * x2 = lasa.lalloc(128);
+    auto * x2 = lasa.lalloc(8);
     lasa.printFreeList();
-    auto* x3 = lasa.lalloc(50);
+    /*auto* x3 = lasa.lalloc(50);
     lasa.printFreeList();
     auto * x4 = lasa.lalloc(593);
-    lasa.printFreeList();
+    lasa.printFreeList();*/
 
-    /*lasa.lfree(x1);
+    cout << "Freeing" << endl << endl;
+
+    lasa.lfree(x1);
     lasa.printFreeList();
     lasa.lfree(x2);
     lasa.printFreeList();
-    lasa.lfree(x3);
+    /*lasa.lfree(x3);
     lasa.printFreeList();
     lasa.lfree(x4);
     lasa.printFreeList();*/
@@ -64,6 +69,8 @@ int main() {
 	lasa.printFreeList();
 
 	lasa.lfree(array);
+
+	lasa.printFreeList();
 }
 
 	
@@ -141,7 +148,14 @@ int main(int argc, char *argv[])
 	 * free it all -- notice that a1 is already free
 	 */
 	lasa.lfree(a2);
+	cout << "32" << endl;
+	lasa.printFreeList();
+
+	//cout << "104" << endl;
 	lasa.lfree(a3);
+	lasa.printFreeList();
+
+	//cout << "8" << endl;
 	lasa.lfree(a4);
 	printf("FREE LIST after all free\n");
 	lasa.printFreeList();
