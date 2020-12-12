@@ -12,7 +12,7 @@
 
 // Defines for LASAalloc buffer simulation.  
 // Keep it simple, no changes to program break
-#define INITIAL_MALLOC_SIZE 100000
+#define INITIAL_MALLOC_SIZE 1000 //100000
 #define MAX_MALLOC_SIZE 100000 //100000
 
 using namespace std;
@@ -54,7 +54,7 @@ LASAalloc::~LASAalloc() { //TODO destructor
 
 }
 
-void LASAalloc::display_node(struct block *p) {
+void LASAalloc::display_node(struct block *p) { //NOLINT
     cout << "Prev: " << p->prev;
     cout << "\tNext: " << p->next;
     cout << "\tSize: " << p->size;
@@ -66,7 +66,7 @@ void LASAalloc::printFreeList() {
 	block * begin = free_list_header;
     struct block *p;
 	if(begin == nullptr) {
-		cout<<"List is empty\n";
+		cout<<"List is empty\n\n\n";
 		return;
 	}
 	p = begin;
@@ -78,21 +78,25 @@ void LASAalloc::printFreeList() {
 	cout<<"\n";
 }
 
+int LASAalloc::rounded(int x) {return (int) round(x/8) * 8;} //NOLINT
+
 void* LASAalloc::lalloc(int x) { //NOLINT
     block * header = free_list_header;
-
-    //cout << header->size << endl;
+    x = rounded(x);
 
     while (header != nullptr) {
         if (x > header->size) {
             header = header->next;
-            if (header == nullptr)
+            if (header == nullptr) {
+                cout << "Out of memory" << endl;
                 return nullptr; //preserves free list, no allocation
+            }
             continue; //check next header for fit
         }
 
         if (x + 32 >= header->size) { //hijack
-            header->size = x;
+
+            //cout << "hijack" << endl;
 
             if (header->next == nullptr && header->prev == nullptr) {
                 free_list_header = nullptr;
@@ -110,11 +114,10 @@ void* LASAalloc::lalloc(int x) { //NOLINT
                 header->next = nullptr;
             }
 
-            return header;
-
         } else {
             block * new_header = header + 32 + x;
             new_header->size = header->size - 32 - x;
+            new_header->space = (BYTE_t *) new_header + 32;
 
             if (header->next == nullptr && header->prev == nullptr) {
                 new_header->next = nullptr;
@@ -132,15 +135,22 @@ void* LASAalloc::lalloc(int x) { //NOLINT
                 new_header->prev = header->prev;
             }
 
-            return new_header;
+            //cout << "new header size, non hijack: " << new_header->size << endl;
         }
+
+        header->size = x;
+
+        return header->space;
+
     }
 
+    cout << "Memory not allocated" << endl;
     return nullptr;
+
 }
 
-void* LASAalloc::lfree(void* userBlock) { //TODO lfree and merge
-	
+void LASAalloc::lfree(void * spc) { //NOLINT
+
 }
 
 /*

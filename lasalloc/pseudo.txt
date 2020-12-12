@@ -28,9 +28,7 @@ void lalloc(int x) {
                 header.next == nullptr;
             }
 
-        } else {
-            header.size = x;
-            
+        } else {            
             new_header = header + 32 + x;
             new_header.size = header.size - 32 - x;
 
@@ -57,10 +55,48 @@ void lalloc(int x) {
     return nullptr;
 }
 
-block lfree(block alloc) {
-
+void merge(block p, block n) {
+    p->next = n->next;
+    n->next->prev = p;
+    p->size = c->size + 32;
 }
 
-void merge() {
-    
+void lfree(void spc) {
+    block header = free_list_header;
+    block alloc = (struct block *) (spc - 32);
+
+    while (header != nullptr) {
+        block p = header->prev;
+        block n = header->next;
+        
+        if (alloc->space > p->space && alloc->space < n->space) {
+            alloc->next = n;
+            alloc->prev = p;
+            p->next = alloc;
+            n->prev = alloc;
+        } else if (alloc->space < n->space && p == nullptr) {
+            alloc->next = n;
+            n->prev = alloc;
+            free_list_header = alloc;
+        } else if (alloc->space > p->space && n == nullptr) {
+            alloc->prev = p;
+            p->next = alloc;
+        } else {
+            free_list_header = alloc;
+        }
+    }
+
+    bool merge_left = alloc->prev->space + alloc->prev->size == alloc;
+    bool merge_right = alloc->space + alloc->size == alloc->next;
+
+    if ((p != nullptr && n != nullptr) && (merge_left && merge_right)) {
+        merge(alloc->prev, alloc);
+        merge(alloc->prev, alloc->next);
+    } else if (alloc->prev == nullptr && alloc->next != nullptr && merge_right) {
+        merge(alloc, alloc->next);
+    } else if (alloc->prev != nullptr && alloc->next == nullptr && merge_left) {
+        merge(alloc->prev, alloc);
+    } else {
+        free_list_header = alloc;
+    }
 }

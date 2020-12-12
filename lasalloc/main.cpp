@@ -6,13 +6,39 @@
  * 
  * Do not change anything else in this file
  */ 
-#define SIMPLETEST1
+
+#define TEST
 
 #include <unistd.h>
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include"LASAalloc.h"
+
+#ifdef TEST
+
+int main() {
+    LASAalloc lasa;
+    auto * x1 = lasa.lalloc(100);
+    lasa.printFreeList();
+    auto * x2 = lasa.lalloc(128);
+    lasa.printFreeList();
+    auto* x3 = lasa.lalloc(50);
+    lasa.printFreeList();
+    auto * x4 = lasa.lalloc(593);
+    lasa.printFreeList();
+
+    /*lasa.lfree(x1);
+    lasa.printFreeList();
+    lasa.lfree(x2);
+    lasa.printFreeList();
+    lasa.lfree(x3);
+    lasa.printFreeList();
+    lasa.lfree(x4);
+    lasa.printFreeList();*/
+}
+
+#endif
 
 #ifdef SIMPLETEST1
 int main() {

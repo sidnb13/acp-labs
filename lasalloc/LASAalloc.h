@@ -11,7 +11,7 @@
 
 using namespace std;
 
-typedef unsigned char byte_t;
+typedef unsigned char BYTE_t;
 
 struct block {
 	struct block *prev;
@@ -26,7 +26,7 @@ class LASAalloc {
 	block*	freeList = nullptr;
 	
 	// Helper function
-	static void display_node(struct block *p);
+	void display_node(struct block *p);
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 		Student supplied local instance variables
@@ -35,7 +35,8 @@ class LASAalloc {
 	 * 		These must only be private.
 	 */
 
-
+private:
+    int rounded(int x);
 
 	/*
 	 *    End student changes 
@@ -47,9 +48,9 @@ public:
 	~LASAalloc();
 
 	void * lalloc(int x);
-	void* lfree(void* userBlock);
+	void lfree(void* spc);
 
-    static void printFreeList();
+	void printFreeList();
 	void* brk(int size);
 };
 
