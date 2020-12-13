@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 	 * free it all -- notice that a1 is already free
 	 */
 	lasa.lfree(a2);
-	cout << "32" << endl;
+	//cout << "32" << endl;
 	lasa.printFreeList();
 
 	//cout << "104" << endl;

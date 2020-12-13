@@ -48,6 +48,8 @@ LASAalloc::LASAalloc() {
 	
 	display_node(freeList);
 
+	cout << "---------------------------------------------" << endl;
+
     cout << endl;
 }
 
@@ -57,11 +59,11 @@ LASAalloc::~LASAalloc() { //TODO destructor
 }
 
 void LASAalloc::display_node(struct block *p) { //NOLINT
-    cout << "Record: " << p;
-    cout << "\tPrev: " << p->prev;
-    cout << "\tNext: " << p->next;
-    cout << "\tSize: " << p->size;
-    cout << "\tSpace: " << p->space << endl;
+    cout << "block: " << p << endl;
+    cout << "\t\tsize: " << p->size << endl;
+    cout << "\t\tnext: " << p->next << endl;
+    cout << "\t\tprev: " << p->prev << endl;
+    cout << "\t\tbuffer: " << p->space << endl;
 }
 
 void LASAalloc::printFreeList() {
@@ -214,8 +216,8 @@ void LASAalloc::lfree(void * spc) {
         header = header->next; //none of cases satisfy
     }
 
-    block * p;
-    block * n;
+    /*block * p;
+    block * n;*/
 
     if (alloc->next != nullptr && (struct block *) ((BYTE_t *) alloc->space + alloc->size) == alloc->next) { // right-merge
         //cout << "Merge-R" << endl;
@@ -236,7 +238,7 @@ void LASAalloc::lfree(void * spc) {
  */
 
 void * LASAalloc::brk(int size) {
-	if (size !=0) {
+	if (size != 0) {
 		if (bufferBase == nullptr) {
 			bufferBase = malloc(size);
 			bufferSize = size;
