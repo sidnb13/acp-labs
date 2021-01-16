@@ -21,15 +21,11 @@ static void showTowers(Stack* t1, Stack* t2, Stack* t3) {
     cout << endl;
 }
 
-/*void displayMovement(Disc* d, const string& from, const string& to) {
-    printf("Disk %d was moved from \'%s\' to \'%s\'\n",d->getSize(),from.c_str(),to.c_str());
-}*/
-
 void moveDisks(int n, Stack *src, Stack *dest, Stack *spare) {
     if (n <= 0)
         return;
 
-    moveDisks(n - 1, src, spare, dest); //move from 1st to 2nd
+    moveDisks(n - 1, src, spare, dest); //move n-1 discs from 1st to 2nd
 
     moveNum++;
     printf("MOVE #%d:\n\n", moveNum);
@@ -39,11 +35,11 @@ void moveDisks(int n, Stack *src, Stack *dest, Stack *spare) {
 
     showTowers(src, spare, dest);
 
-    moveDisks(n - 1, spare, dest, src); //move 2nd to 3rd and complete
+    moveDisks(n - 1, spare, dest, src); //move the n-1 discs 2nd to 3rd (dest stack complete)
 }
 
 void toh(int n) {
-    int i, j = 0, numMoves = (int) pow(2,n) - 1;
+    int i, numMoves = (int) pow(2, n) - 1;
 
     auto *t1 = new Stack();
     auto *t2 = new Stack();
@@ -53,13 +49,18 @@ void toh(int n) {
         t1->push(new Disc(i));
 
     cout << "---------------------STATS---------------------" << endl;
-    printf("# of discs: %d\n# of moves: %d\n", n, numMoves);
+    printf("# of discs = %d\n# of moves = 2^%d - 1 = %d\n", n, n, numMoves);
     cout << "-----------------------------------------------" << endl << endl;
 
     printf("MOVE #%d (Original setup):\n\n", moveNum);
     showTowers(t1, t2, t3);
 
-    moveDisks(n, t1, t3, t2);
+    moveDisks(n, t1, t3, t2); //initiate recursive call
+
+    //destruct stacks
+    delete t1;
+    delete t2;
+    delete t3;
 }
 
 int main() {
