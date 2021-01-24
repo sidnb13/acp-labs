@@ -26,6 +26,7 @@
 #include <time.h>
 
 #include "lqueue.h"		// The LAnix IPC message queue library
+#include "PQueue.h"
 
 using namespace std;
 
@@ -39,6 +40,15 @@ class thread_data {
 
 
 int main () {
+    /*PQueue pq = PQueue();
+
+    pq.push((void *) "T1", 3);
+    pq.push((void *) "T2", 1);
+    pq.push((void *) "T3", 2);
+    //pq.push((void *) "T4", 1);
+
+    pq.display();*/
+
 	//Array that will hold thread id's created by the system
    pthread_t threads[NUM_THREADS];
    //information to be passed into the thread when created.
@@ -51,13 +61,13 @@ int main () {
 	td[1].thread_id = 1;
 	td[1].message = (char *)"Client thread\n";
 	
-	/*
-	 * int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg);
+
+	  /*int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg);
 	 * pthread_t *thread: location for system to put information about the thread when created.
 	 * const pthread_attr_t *attr: Attributes passwd to system describing the requested thread configuration.
 	 * void *(*start_routine)(void*):  The routine within the thread to begin execution
-	 * void *arg: The arguments passed into the thread, essentially the argc, argv of 'main(argc, argv)'
-	 * */
+	 * void *arg: The arguments passed into the thread, essentially the argc, argv of 'main(argc, argv)'*/
+
 
 	// Launcht the server thread
 	rc = pthread_create(&threads[i], NULL, server_main, (void *)&td[0]);

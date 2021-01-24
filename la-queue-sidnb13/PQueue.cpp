@@ -24,20 +24,24 @@ using namespace std;
 * Insert into Priority Queue
 */
 void PQueue::push(void *item, int priority) {
-	/* Your code here */
 	node *start = front;
 
 	node *temp = new node;
     temp->priority = priority;
     temp->data = item;
 
+    //cout << (front == nullptr) << endl;
+
 	if (front == nullptr) {
+        //cout << "CASE 1" << endl;
 	    front = temp;
-    } else if (front->priority > priority) { //case to insert at front
+	} else if (front->priority > priority) { //case to insert at front
+	    //cout << "CASE 2" << endl;
 	    temp->next = front;
 	    front = temp;
 	} else {
-        while (start->next != nullptr && start->next->priority < priority) //find insertion point
+        //cout << "CASE 3" << endl;
+        while (start->next != nullptr && start->next->priority <= priority) //find insertion point
             start = start->next;
         //fit into LL
         temp->next = start->next;
@@ -49,7 +53,6 @@ void PQueue::push(void *item, int priority) {
  * Delete from Priority Queue
  */
 void* PQueue::top() {
-	/* Your code here */
 	if (front == nullptr)
         return nullptr;
 	return front->data;
@@ -58,23 +61,20 @@ void* PQueue::top() {
  * Delete from Priority Queue
  */
 void PQueue::pop() {
-	/* Your code here */
-	if (front != nullptr) {
-        node *temp = front;
-        front = front->next;
-        delete temp;
-    }
+	if (front == nullptr)
+        return;
+    //node *temp = front;
+    front = front->next;
+    //delete temp;
 }
 
 /*
  * Print Priority Queue
  */
-void PQueue::display() {
-	/* Your code here */
+__unused void PQueue::display() {
 	node *temp = front;
-	if (temp == nullptr)
-        return;
-	while (temp->next != nullptr) {
+	//cout << "TEST" << endl;
+	while (temp != nullptr) {
         std::cout<<temp->priority<<" "<<(char*)temp->data<<std::endl;
 	    temp = temp->next;
 	}
