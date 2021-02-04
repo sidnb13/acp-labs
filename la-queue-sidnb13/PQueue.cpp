@@ -24,29 +24,31 @@ using namespace std;
 * Insert into Priority Queue
 */
 void PQueue::push(void *item, int priority) {
-	node *start = front;
+    if (len + 1 <= max_mqsize && strlen((char*)item) <= max_msgsize) {
+        node *start = front;
 
-	node *temp = new node;
-    temp->priority = priority;
-    temp->data = item;
+        node *temp = new node;
+        temp->priority = priority;
+        temp->data = item;
 
-    //cout << (front == nullptr) << endl;
+        //cout << (front == nullptr) << endl;
 
-	if (front == nullptr) {
-        //cout << "CASE 1" << endl;
-	    front = temp;
-	} else if (front->priority > priority) { //case to insert at front
-	    //cout << "CASE 2" << endl;
-	    temp->next = front;
-	    front = temp;
-	} else {
-        //cout << "CASE 3" << endl;
-        while (start->next != nullptr && start->next->priority <= priority) //find insertion point
-            start = start->next;
-        //fit into LL
-        temp->next = start->next;
-        start->next = temp;
-	}
+        if (front == nullptr) {
+            //cout << "CASE 1" << endl;
+            front = temp;
+        } else if (front->priority > priority) { //case to insert at front
+            //cout << "CASE 2" << endl;
+            temp->next = front;
+            front = temp;
+        } else {
+            //cout << "CASE 3" << endl;
+            while (start->next != nullptr && start->next->priority <= priority) //find insertion point
+                start = start->next;
+            //fit into LL
+            temp->next = start->next;
+            start->next = temp;
+        }
+    }
 }
 
 /*
@@ -81,4 +83,3 @@ __unused void PQueue::display() {
 	/* Use the following out command for the data */
 	//std::cout<<ptr->priority<<" "<<(char*)ptr->data<<std::endl;
 }
-	

@@ -46,8 +46,6 @@ void *client_main (void *threadarg)
     char client_queue_name [64];
     lqd_t qd_server;
 	lqd_t qd_client;   // queue descriptors
-	
-
 
     // create the client queue for receiving messages from server
     sprintf (client_queue_name, "/q-client-%d", getpid ());

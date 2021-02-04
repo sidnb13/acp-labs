@@ -29,4 +29,9 @@ class PQueue {
 	void pop();
 
     __unused void display();
+
+    long max_mqsize{};
+    long max_msgsize{};
+
+    int len{};
 };

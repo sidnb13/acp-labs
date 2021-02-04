@@ -22,7 +22,6 @@
 #include "lqueue.h"
 #include "PQueue.h"
 
-
 typedef int lqd_t;
 
 #define LQUEUE_TABLE_MAX 10
@@ -46,26 +45,27 @@ lqd_t lq_open (const char *__name, int __oflag)
 			return i;
 	return -1;
 }
-lqd_t lq_open (const char *__name, int __oflag, int mode, lq_attr *attr)
-{
-	if (__oflag & O_CREAT)
-	{
+
+// IMPORTANT TO NOTE
+//implemented usage of MAX_MESSAGES and MAX_MSG_SIZE in lq_open() for additional 10% credit
+//This is present in the PQueue.cpp/h files as I used a length field to perform checks
+
+lqd_t lq_open (const char *__name, int __oflag, int mode, lq_attr *attr) {
+
+	if (__oflag & O_CREAT) {
 		// On first create, clear all the structures
 		if (lqueue_table_cur >= LQUEUE_TABLE_MAX)
 			return -1;
 
 		mylock.lock();
 
-		if (lqueue_table_cur == 0)
-		{
+		if (lqueue_table_cur == 0) {
 			for (int i=0; i < LQUEUE_TABLE_MAX-1; i++)
 				lqueue_table[i].lq_name[0] = 0;
-				
 		}
 		int i = 0;
 		for (i=0; i < LQUEUE_TABLE_MAX; i++)
-			if(strcmp(lqueue_table[i].lq_name, __name) == 0)
-			{
+			if(strcmp(lqueue_table[i].lq_name, __name) == 0) {
 				lqueue_table[i].refCount += 1;
 				mylock.unlock();
 				return i;
@@ -74,13 +74,23 @@ lqd_t lq_open (const char *__name, int __oflag, int mode, lq_attr *attr)
 		lqueue_table[lqueue_table_cur].refCount +=1;
 		i = lqueue_table_cur;
 		lqueue_table[i].lq_ptr = new PQueue();
+
+		//Modification done in this segment
+
+        lqueue_table[i].lq_ptr->max_mqsize = attr->lq_maxmsg;
+        lqueue_table[i].lq_ptr->max_msgsize = attr->lq_msgsize;
+
+		//end modification
+
 		lqueue_table_cur += 1;
 		mylock.unlock();
 		return i;
 	}
+
 	mylock.unlock();
 	return -1;
 }
+
 int lq_close (lqd_t __msgid)
 {
 	int i = __msgid;
@@ -98,6 +108,7 @@ int lq_close (lqd_t __msgid)
 	}
 	return 0;
 }
+
 int lq_send (lqd_t __msgid, const char *__msg, size_t __msg_len, unsigned int __msg_prio)
 {
 	mylock.lock();
@@ -116,6 +127,7 @@ int lq_send (lqd_t __msgid, const char *__msg, size_t __msg_len, unsigned int __
 	mylock.unlock();
 	return 0;
 }
+
 ssize_t lq_receive (lqd_t __msgid, char *__msg, size_t __msg_len, unsigned int *__msg_prio)
 {
 	ssize_t len = 0;
@@ -130,7 +142,7 @@ ssize_t lq_receive (lqd_t __msgid, char *__msg, size_t __msg_len, unsigned int *
 	{
 		mylock.unlock();		
 		return len;
-	} 
+	}
 	len = strlen(local_buf);
 	lqueue_table[__msgid].lq_ptr->pop();
 	if(__msg_len < (unsigned)len) {				// if msg_id is invalid, signal an error
@@ -143,10 +155,36 @@ ssize_t lq_receive (lqd_t __msgid, char *__msg, size_t __msg_len, unsigned int *
 	mylock.unlock();
 	return len;
 }
-int lq_notify (lqd_t __msgid, const struct sigevent *__notification)
-{
+
+int lq_notify (lqd_t _msgid, const struct sigevent *_notification) {
+    /*if (_notification != nullptr) {
+        siginfo_t sig;
+        if (_notification->sigev_notify == SIGEV_NONE) {
+            return 0;
+        } else if (_notification->sigev_notify == SIGEV_SIGNAL) {
+            sig.si_signo = _notification->sigev_signo;
+            sig.si_errno = 0;
+            sig.si_code = SI_MESGQ;
+            sig.si_value = _notification->sigev_value;
+
+            //set si_pid and si_uid to real user id
+            mylock.lock();
+            sig.si_pid = getpid();
+            sig.si_uid = getuid();
+            mylock.unlock();
+
+            //kill(sig.si_signo, _notification->sigev_notify);
+
+
+        } else if (_notification->sigev_notify == SIGEV_THREAD) {
+            //invoke sigev_notify_function
+
+            return 0;
+        }
+    }*/
 	return 0;
 }
+
 int lq_unlink (const char *__name)
 {
 	for (int i=0; i < LQUEUE_TABLE_MAX; i++)
@@ -164,6 +202,7 @@ int lq_unlink (const char *__name)
 		}
 	return 0;
 }
+
 int lq_getattr (lqd_t __msgid, struct lq_attr *__mqstat)
 {
 	for (int i=0;i<LQUEUE_TABLE_MAX; i++)
@@ -171,8 +210,8 @@ int lq_getattr (lqd_t __msgid, struct lq_attr *__mqstat)
 			std::cout << i << ". " << lqueue_table[i].lq_name << std::endl;
 	return 0;
 }
+
 int lq_setattr (lqd_t __msgid, const struct lq_attr *__mqstat, struct lq_attr *__omqattr)
 {
 	return 0;
 }
-
