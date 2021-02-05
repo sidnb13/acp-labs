@@ -10,7 +10,7 @@
  */
 struct node
 {
-    int key_value;
+    int key_value = 0;
     struct node *p_left;
     struct node *p_right;
 };
@@ -18,21 +18,21 @@ struct node
 /*
  * Class Declaration
  */
-class BST
-{
+class BST {
+
 public:
 		node* root;
-        void find(int, node **, node **);    
+        void find(int, node **, node **) const;
         void insert(node *, node *);
-        void remove(int);
+        void remove(int) const;
         void case_0(node *,node *);
         void case_1(node *,node *);
         void case_2(node *,node *);
         void display(node *, int);
-        BST()
-        {
-            root = NULL;
-        }
+        BST() {root = nullptr;}
+
+        void chooseBin(node **r, node **l);
+        bool searchKey(int key, node *loc);
 };
 
 
