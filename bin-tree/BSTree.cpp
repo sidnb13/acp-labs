@@ -84,12 +84,10 @@ void BST::chooseBin(node** parent, node** child) {
  * Inserting Element into the Tree
  */
 void BST::insert(node *tree, node *pNode) {
-    //cout << "TEST" << endl;
     if (tree == nullptr) { //we  are at root
         // Just create a single node for root to point to,
         //    with all the data in it.
         chooseBin(&tree, &pNode);
-        cout << "TEST" << endl;
     } else if (searchKey(pNode->key_value, root)) { // there is already a node with our key value
         //Just return
         return;
@@ -115,7 +113,7 @@ void BST::insert(node *tree, node *pNode) {
 /*
  * Delete Element from the tree
  */
-void BST::remove(int item) const {
+void BST::remove(int item) {
     node *parent, *location;
     if (root == nullptr) {
         cout<<"Tree empty"<<endl;
@@ -126,14 +124,12 @@ void BST::remove(int item) const {
         cout<<"Item not present in tree"<<endl;
         return;
     }
-    /*if (there is no child on left or right)
-        case_0(...);
-    if (there is one child on left only)
-        case_1(...);
-    if (there is one child on right only)
-        case_1(...);
-    if (there are childred on left and right)
-        case_2(...);*/
+    if (location->p_left == nullptr && location->p_right == nullptr) //there is no child on left or right
+        case_0(parent, location);
+    if (location->p_left == nullptr ^ location->p_right == nullptr) //there is one child on left/right only
+        case_1(parent, location);
+    if (!(location->p_left == nullptr || location->p_right == nullptr)) //there are children on left and right
+        case_2(parent, location);
     free(location);
 }
  
@@ -141,12 +137,14 @@ void BST::remove(int item) const {
  * Case 0
  * the node is simply removed no other updates necessary.
  */
-void BST::case_0(node *prnt, node *loc ) {
-    /*if (we are at the root) {
-        //update the root
-    } else {
-      // otherwise simply remove node
-    }*/
+void BST::case_0(node *prnt, node *loc ) const {
+    //cout << endl << "case 0" << endl;
+    if (prnt == root) //we are at the root, so update the root
+        prnt->key_value = loc->key_value;
+    if (prnt->p_left != nullptr)
+        prnt->p_left = nullptr;
+    else
+        prnt->p_right = nullptr;
 }
  
 /*
@@ -154,21 +152,40 @@ void BST::case_0(node *prnt, node *loc ) {
  * We have only one child so promote the child and replace the target
  * node
  */
-void BST::case_1(node *prnt, node *loc) {
+void BST::case_1(node *prnt, node *loc) const {
+    //cout << endl << "case 1" << endl;
     node *child;
-
-    /*if (the child is on the left?)
+    if (loc->p_left != nullptr) { //the child is on the left?
         //point left
-    else  // must be the right side has child
+        child = loc->p_left;
+    } else {  // must be the right side has child
         // point right
-    if (we are at the root handle specialy) {
+        child = loc->p_right;
+    }
+    if (loc == root) { //we are at the root handle specially
         // update the root
+        loc->key_value = child->key_value;
+        loc->p_left = child->p_left;
+        loc->p_right = child->p_right;
     } else {
-        //if (the node is left child of parent)
-            //promote the left
-        //else // the node is right of parent
-        //    promote right
-    }*/
+        //cout << endl << "not root" << endl;
+        if (prnt->p_left == loc) { //the node is left child of parent, promote the left
+            prnt->p_left = child;
+        } else { // the node is right of parent, promote right
+            prnt->p_right = child;
+        }
+    }
+}
+
+/*
+ * Helper to find minimum
+ */
+node* BST::min(node* curr) {
+    if (curr == nullptr)
+        return nullptr;
+    if (curr->p_left == nullptr)
+        return curr;
+    return min(curr->p_left);
 }
  
 /*
@@ -176,28 +193,29 @@ void BST::case_1(node *prnt, node *loc) {
  * We have to find and promote a successor or predecessor
  */
 void BST::case_2(node *prnt, node *loc) {
+    //cout << endl << "case 2" << endl;
     // temporary pointers for node we are manipulating
-
     // Find successor: Step to the right child
+    node* find = min(loc->p_right);
     // Find the min of the subtree on parent's right
+    //node* abs_min = min(root);
 
-    /*if (found node has no children)
-      // Replace the target node with the successor node
-    else
+    if (find->p_left == nullptr && find->p_right == nullptr) { //found node has no children
+        // Replace the target node with the successor node
+        
+    } else {
         // Temporarily remove the successor node by replacing it with
         // its right child, we will replace the node we are removing
         // with the successor we just removed.
-        
-    if (we are at root) {
+    } if (loc == root) { //we are at root
         //then update root
     } else {
         // Insert the successor node where the target node we
         //   are removing is located
     }
     // then update the successor child pointers to reflect the old 
-    //     target's child pointers.*/
+    //     target's child pointers.
 }
- 
 
 /*
  * Display Tree Structure
@@ -217,4 +235,3 @@ void BST::display(node *ptr, int level) {
         display(ptr->p_left, level+1);
     }
 }
-
