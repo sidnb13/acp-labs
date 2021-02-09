@@ -193,28 +193,67 @@ node* BST::min(node* curr) {
  * We have to find and promote a successor or predecessor
  */
 void BST::case_2(node *prnt, node *loc) {
-    //cout << endl << "case 2" << endl;
+
+    node* succ = loc->p_right;
+    node* ptr = loc;
+
+    if (succ->p_left == nullptr) {
+        ptr->key_value = succ->key_value;
+        ptr->p_right = succ->p_right;
+        return;
+    }
+
+    while (succ->p_left != nullptr) {
+        ptr = succ;
+        succ = succ->p_left;
+    }
+
+    loc->key_value = succ->key_value;
+
+    ptr->p_left = succ->p_right;
+
+    /*//cout << endl << "case 2" << endl;
     // temporary pointers for node we are manipulating
+    node* temp;
     // Find successor: Step to the right child
-    node* find = min(loc->p_right);
+    node* find = successor(loc);
     // Find the min of the subtree on parent's right
-    //node* abs_min = min(root);
+
+    //cout << endl << "find " << find->key_value << endl << "right_min " << right_min->key_value << endl;
+
+    node* p = prnt;
+    node* l = loc;
+    this->find(find->key_value, &p, &l);
 
     if (find->p_left == nullptr && find->p_right == nullptr) { //found node has no children
         // Replace the target node with the successor node
-        
+
+        //cout << "p " << p->key_value << endl << "l " << l->key_value << endl;
+
+        swap(loc->key_value, find->key_value);
+
+        if (p->p_right != nullptr)
+            p->p_right = nullptr;
+        else p->p_left = nullptr;
+
     } else {
         // Temporarily remove the successor node by replacing it with
         // its right child, we will replace the node we are removing
         // with the successor we just removed.
-    } if (loc == root) { //we are at root
+        temp = find;
+        case_1(p, l);
+    }
+
+    if (loc == root) { //we are at root
         //then update root
+
+
     } else {
         // Insert the successor node where the target node we
         //   are removing is located
     }
     // then update the successor child pointers to reflect the old 
-    //     target's child pointers.
+    //     target's child pointers.*/
 }
 
 /*

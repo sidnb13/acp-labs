@@ -11,8 +11,8 @@
 struct node
 {
     int key_value = 0;
-    struct node *p_left;
-    struct node *p_right;
+    struct node *p_left{};
+    struct node *p_right{};
 };
  
 /*
@@ -35,6 +35,7 @@ public:
         bool searchKey(int key, node *loc);
 
         node *min(node *curr);
+
 };
 
 
