@@ -109,12 +109,32 @@ void BST::insert(node *tree, node *pNode) {
         }
     }
 }
+
+/*
+ * Helper to find minimum
+ */
+node* BST::min(node* curr) {
+    if (curr == nullptr || curr->p_left == nullptr)
+        return curr;
+    return min(curr->p_left);
+}
+
+/*
+ * Helper to find max
+ */
+node *BST::max(node *curr) {
+    if (curr == nullptr || curr->p_right == nullptr)
+        return curr;
+    return max(curr->p_right);
+}
  
 /*
  * Delete Element from the tree
  */
 void BST::remove(int item) {
-    node *parent, *location;
+    delete_node(root, item);
+
+    /*node *parent, *location;
     if (root == nullptr) {
         cout<<"Tree empty"<<endl;
         return;
@@ -123,14 +143,53 @@ void BST::remove(int item) {
     if (location == nullptr) {
         cout<<"Item not present in tree"<<endl;
         return;
-    }
-    if (location->p_left == nullptr && location->p_right == nullptr) //there is no child on left or right
+    }*/
+
+    /*if (location->p_left == nullptr && location->p_right == nullptr) //there is no child on left or right
         case_0(parent, location);
     if (location->p_left == nullptr ^ location->p_right == nullptr) //there is one child on left/right only
         case_1(parent, location);
     if (!(location->p_left == nullptr || location->p_right == nullptr)) //there are children on left and right
         case_2(parent, location);
-    free(location);
+    free(location);*/
+}
+
+/*
+ * Recursive deletion --> REPLACES remove function which just redirects to this for convenience
+ */
+void BST::delete_node(node* loc, int item) {
+    if (false){
+        node* p = root;
+        node* l = nullptr;
+
+        find(item, &p, &l);
+
+        cout << item << ": P: " << p->key_value << " L: " << p->p_left->key_value << " R: " << p->p_right->key_value << endl;
+    } else {
+        //base case
+        if (!root)
+            return;
+
+        if (item < loc->key_value)
+            delete_node(loc->p_left, item);
+        else if (item > loc->key_value)
+            delete_node(loc->p_right, item);
+
+        else {
+            if (!loc->p_left && !loc->p_right) { //case 1
+                delete loc;
+            } else if (root->p_left && root->p_right) { //case 2
+                node *pred = max(loc->p_left);
+                loc->key_value = pred->key_value;
+                delete_node(loc->p_left, pred->key_value);
+            } else {
+                node *loc_c = loc->p_left ? loc->p_left : loc->p_right;
+                node *to_delete = loc;
+                loc = loc_c;
+                delete to_delete;
+            }
+        }
+    }
 }
  
 /*
@@ -176,23 +235,14 @@ void BST::case_1(node *prnt, node *loc) const {
         }
     }
 }
-
-/*
- * Helper to find minimum
- */
-node* BST::min(node* curr) {
-    if (curr == nullptr)
-        return nullptr;
-    if (curr->p_left == nullptr)
-        return curr;
-    return min(curr->p_left);
-}
  
 /*
  * Case case_2
  * We have to find and promote a successor or predecessor
  */
 void BST::case_2(node *prnt, node *loc) {
+
+    //cout << endl << "REMOVE: " << (loc->p_left != nullptr && loc->p_right != nullptr);
 
     node* succ = loc->p_right;
     node* ptr = loc;
@@ -267,8 +317,8 @@ void BST::display(node *ptr, int level) {
         if (ptr == root)
             cout<<"Root->:  ";
         else {
-            for (i = 0;i < level;i++)
-                cout<<"       ";
+            /*for (i = 0;i < level;i++)
+                cout<<"       ";*/
 	}
         cout<<ptr->key_value;
         display(ptr->p_left, level+1);

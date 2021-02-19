@@ -27,7 +27,7 @@ public:
         void remove(int);
         void case_0(node *,node *) const;
         void case_1(node *,node *) const;
-        void case_2(node *,node *);
+        static void case_2(node *,node *);
         void display(node *, int);
         BST() {root = nullptr;}
 
@@ -35,7 +35,9 @@ public:
         bool searchKey(int key, node *loc);
 
         node *min(node *curr);
+        node *max(node *curr);
 
+        void delete_node(node *root, int item);
 };
 
 
