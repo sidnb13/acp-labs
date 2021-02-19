@@ -1,15 +1,15 @@
 /*
  * Binary Search Tree class
- * Do not alter the display() function, this will break the Repl.it 
+ * Do not alter the display() function, this will break the Repl.it
  * tests
  */
- 
+
 #include <iostream>
 #include <cstdlib>
 #include "BSTree.h"
 
 using namespace std;
- 
+
 /*
  * Find Element in the Tree
  * find a node by item_key and provide an updated parent node
@@ -79,7 +79,7 @@ void BST::chooseBin(node** parent, node** child) {
             (*parent)->p_left = (*child);
     }
 }
- 
+
 /*
  * Inserting Element into the Tree
  */
@@ -127,7 +127,7 @@ node *BST::max(node *curr) {
         return curr;
     return max(curr->p_right);
 }
- 
+
 /*
  * Delete Element from the tree
  */
@@ -139,17 +139,17 @@ void BST::remove(int item) {
     if (loc == nullptr)
         return;
 
-    cout << item << endl;
-    cout << (loc->p_left == nullptr) << " " << (loc->p_right == nullptr) << endl;
+   /* cout << item << endl;
+    cout << (loc->p_left == nullptr) << " " << (loc->p_right == nullptr) << endl;*/
 
     if (loc->p_left == nullptr && loc->p_right == nullptr) {
-        cout << "CASE 0" << endl << endl;
+        //cout << "CASE 0" << endl << endl;
         case_0(prnt, loc);
     } else if (loc->p_left == nullptr ^ loc->p_right == nullptr) {
-        cout << "CASE 1" << endl << endl;
+        //cout << "CASE 1" << endl << endl;
         case_1(prnt, loc);
     } else if (loc->p_left != nullptr && loc->p_right != nullptr) {
-        cout << "CASE 2" << endl << endl;
+        //cout << "CASE 2" << endl << endl;
         if (loc->p_right->p_left == nullptr) {
             loc->key_value = loc->p_right->key_value;
             loc->p_right = loc->p_right->p_right;
@@ -168,7 +168,7 @@ void BST::remove(int item) {
         sucP->p_left = suc->p_right;
     }
 }
- 
+
 /*
  * Case 0
  * the node is simply removed no other updates necessary.
@@ -182,7 +182,7 @@ void BST::case_0(node *prnt, node *loc ) const {
     else
         prnt->p_right = nullptr;
 }
- 
+
 /*
  * Case 1
  * We have only one child so promote the child and replace the target
@@ -212,7 +212,7 @@ void BST::case_1(node *prnt, node *loc) const {
         }
     }
 }
- 
+
 /*
  * Case case_2
  * We have to find and promote a successor or predecessor
@@ -279,7 +279,7 @@ void BST::case_2(node *prnt, node *loc) {
         // Insert the successor node where the target node we
         //   are removing is located
     }
-    // then update the successor child pointers to reflect the old 
+    // then update the successor child pointers to reflect the old
     //     target's child pointers.*/
 }
 
