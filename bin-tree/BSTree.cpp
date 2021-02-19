@@ -132,63 +132,40 @@ node *BST::max(node *curr) {
  * Delete Element from the tree
  */
 void BST::remove(int item) {
-    delete_node(root, item);
+    node* prnt = root;
+    node* loc = nullptr;
+    find(item, &prnt, &loc);
 
-    /*node *parent, *location;
-    if (root == nullptr) {
-        cout<<"Tree empty"<<endl;
+    if (loc == nullptr)
         return;
-    }
-    find(item, &parent, &location);
-    if (location == nullptr) {
-        cout<<"Item not present in tree"<<endl;
-        return;
-    }*/
 
-    /*if (location->p_left == nullptr && location->p_right == nullptr) //there is no child on left or right
-        case_0(parent, location);
-    if (location->p_left == nullptr ^ location->p_right == nullptr) //there is one child on left/right only
-        case_1(parent, location);
-    if (!(location->p_left == nullptr || location->p_right == nullptr)) //there are children on left and right
-        case_2(parent, location);
-    free(location);*/
-}
+    cout << item << endl;
+    cout << (loc->p_left == nullptr) << " " << (loc->p_right == nullptr) << endl;
 
-/*
- * Recursive deletion --> REPLACES remove function which just redirects to this for convenience
- */
-void BST::delete_node(node* loc, int item) {
-    if (false){
-        node* p = root;
-        node* l = nullptr;
-
-        find(item, &p, &l);
-
-        cout << item << ": P: " << p->key_value << " L: " << p->p_left->key_value << " R: " << p->p_right->key_value << endl;
-    } else {
-        //base case
-        if (!root)
+    if (loc->p_left == nullptr && loc->p_right == nullptr) {
+        cout << "CASE 0" << endl << endl;
+        case_0(prnt, loc);
+    } else if (loc->p_left == nullptr ^ loc->p_right == nullptr) {
+        cout << "CASE 1" << endl << endl;
+        case_1(prnt, loc);
+    } else if (loc->p_left != nullptr && loc->p_right != nullptr) {
+        cout << "CASE 2" << endl << endl;
+        if (loc->p_right->p_left == nullptr) {
+            loc->key_value = loc->p_right->key_value;
+            loc->p_right = loc->p_right->p_right;
             return;
-
-        if (item < loc->key_value)
-            delete_node(loc->p_left, item);
-        else if (item > loc->key_value)
-            delete_node(loc->p_right, item);
-
-        else {
-            if (!loc->p_left && !loc->p_right) { //case 1
-                delete loc;
-            } else if (root->p_left && root->p_right) { //case 2
-                node *pred = max(loc->p_left);
-                loc->key_value = pred->key_value;
-                delete_node(loc->p_left, pred->key_value);
-            } else {
-                node *loc_c = loc->p_left ? loc->p_left : loc->p_right;
-                node *to_delete = loc;
-                loc = loc_c;
-                delete to_delete;
-            }
         }
+
+        node* suc = loc->p_right;
+        node* sucP = loc;
+
+        while (suc->p_left != nullptr) {
+            sucP = suc;
+            suc = suc->p_left;
+        }
+
+        loc->key_value = suc->key_value;
+        sucP->p_left = suc->p_right;
     }
 }
  

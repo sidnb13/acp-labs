@@ -127,7 +127,7 @@ int main() {
     int rem[] = {93,40,127,70};
     //int rem[] = {93,127};
     int arrlen = 128;
-    int remlen = 1;
+    int remlen = 4;
 
 
     cout << "Array size: " << arrlen << endl;
@@ -139,8 +139,8 @@ int main() {
         bst.insert(bst.root, temp);
     }
 
-    cout<<"Display BST:";
-    bst.display(bst.root,1);
+    /*cout<<"Display BST:";
+    bst.display(bst.root,1);*/
 
     //cout << endl << "root key:" << bst.root->key_value << endl;
 
@@ -148,7 +148,7 @@ int main() {
         bst.remove(rem[i]);
     }
 
-    /*cout<<"\n\nDisplay BST:";
-    bst.display(bst.root,1);*/
+    cout<<"\n\nDisplay BST:";
+    bst.display(bst.root,1);
 
 }
