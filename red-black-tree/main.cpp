@@ -98,7 +98,7 @@ void vprint(vector<ds_operation> vec)
 
 int main(int argc, char **argv)
 {
-  std::cout << "Hello RB trees" << std::endl;
+  //std::cout << "Hello RB trees" << std::endl;
   
   RBtree rb;
 	
@@ -109,14 +109,16 @@ int main(int argc, char **argv)
 	int choice;
 	string line;
 	
-	cout << "Enter 1 for stdin" << endl;
-	cout << "Enter 2 for file" << endl;
+	/*cout << "Enter 1 for stdin" << endl;
+	cout << "Enter 2 for file" << endl;*/
 	
-	cin >> choice;
-	cin.ignore();
+	//cin >> choice;
+	//cin.ignore();
 	//getline(cin, choice); 
 	
-	cout << "choice: " << choice << endl;
+	//cout << "choice: " << choice << endl;
+
+	choice = 2;
 	
 	if (choice == 1)
 	{
@@ -131,10 +133,10 @@ int main(int argc, char **argv)
 	{
 	  string fileName = "data.txt";
 		fstream fin;
-		cout << "Enter File Name [" << fileName << "] > ";
+		/*cout << "Enter File Name [" << fileName << "] > ";
 		getline (cin, fileName);
 		if (fileName == "")
-  	  fileName = "data.txt";
+  	        fileName = "data.txt";*/
 		
 		fin.open(fileName,ios::in);		// open a file to perform read operation using file object
 

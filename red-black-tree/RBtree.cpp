@@ -155,16 +155,19 @@ void RBtree::removeNodeRecursive(Node* node, int key) {
 void RBtree::leftRotate(Node* x) {
     Node *y = x->right;
     x->right = y->left;
-    if (y->left)
+
+    if (y->left != NIL)
       y->left->parent = x;
     y->parent = x->parent;
-    if (x->parent == nullptr)
+
+    if (x->parent == NIL)
       root = y;
     else if (x->parent->left == x) {
       x->parent->left = y;
     } else {
       x->parent->right = y;
     }
+
     y->left = x;
     x->parent = y;
 }
@@ -172,56 +175,57 @@ void RBtree::leftRotate(Node* x) {
 void RBtree::rightRotate(Node* x) {
     Node *y = x->left;
     x->left = y->right;
-    if (y->right)
+
+    if (y->right != NIL)
         y->right->parent = x;
     y->parent = x->parent;
-    if (x->parent == nullptr)
+
+    if (x->parent == NIL)
         root = y;
     else if (x->parent->right == x) {
         x->parent->right = y;
     } else {
         x->parent->left = y;
     }
+
     y->right = x;
     x->parent = y;
 }
 
-void RBtree::fixInsert(Node* k){
+void RBtree::fixInsert(Node* z){
     Node *y;
-    while (k->parent->color == RED) {
-        if (k->parent == k->parent->parent->right) {
-            y = k->parent->parent->left;
+    while (z->parent->color == RED) {
+        if (z->parent == z->parent->parent->left) {
+            y = z->parent->parent->right;
             if (y->color == RED) {
+                z->parent->color = BLACK;
                 y->color = BLACK;
-                k->parent->color = BLACK;
-                k->parent->parent->color = RED;
-                k = k->parent->parent;
+                z->parent->parent->color = RED;
+                z = z->parent->parent;
             } else {
-                if (k == k->parent->left) {
-                    k = k->parent;
-                    rightRotate(k);
+                if (z == z->parent->right) {
+                    z = z->parent;
+                    leftRotate(z);
                 }
-
-                k->parent->color = BLACK;
-                k->parent->parent->color = RED;
-                leftRotate(k->parent->parent);
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+                rightRotate(z->parent->parent);
             }
-        } else {
-            y = k->parent->parent->right;
+        } else if (z->parent == z->parent->parent->right) {
+            y = z->parent->parent->left;
             if (y->color == RED) {
+                z->parent->color = BLACK;
                 y->color = BLACK;
-                k->parent->color = BLACK;
-                k->parent->parent->color = RED;
-                k = k->parent->parent;
-            } else { //copied from the prior else statement but left <-> right
-                if (k == k->parent->right) {
-                    k = k->parent;
-                    leftRotate(k);
+                z->parent->parent->color = RED;
+                z = z->parent->parent;
+            } else {
+                if (z == z->parent->left) {
+                    z = z->parent;
+                    rightRotate(z);
                 }
-
-                k->parent->color = BLACK;
-                k->parent->parent->color = RED;
-                rightRotate(k->parent->parent);
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+                leftRotate(z->parent->parent);
             }
         }
     }
@@ -229,35 +233,38 @@ void RBtree::fixInsert(Node* k){
 }
 
 void RBtree::insert(int key) {
-    Node* z = new Node;
-    z->parent = nullptr;
+    Node* y = NIL;
+    Node* x = root;
+
+    Node *z = new Node;
     z->key = key;
-    z->left = nullptr;
-    z->right = nullptr;
-    z->color = RED;
 
-    Node *y = nullptr;
-    Node *x = root;
-
-    while (x != nullptr) {
-      y = x;
-      if (z->key < x->key)
-          x = x->left;
-      else x = x->right;
+    while (x != NIL) {
+        y = x;
+        if (z->key < x->key) {
+            x = x->left;
+        } else {
+            x = x->right;
+        }
     }
     z->parent = y;
 
-    if (y == nullptr)
+    if (y == NIL) {
         root = z;
-    else if (z->key < y->key)
+    } else if (z->key < y->key) {
         y->left = z;
-    else y->right = z;
+    } else {
+        y->right = z;
+    }
 
-    fixInsert(z); //cause of bug
+    z->left = NIL;
+    z->right = NIL;
+    z->color = RED;
+
+    fixInsert(z);
 }
 
 void RBtree::printTraverse(Node* root, string indent, bool last) {
-  
 	if (root != NIL) {
 	   cout<<indent;
 	   if (last) {
@@ -273,7 +280,6 @@ void RBtree::printTraverse(Node* root, string indent, bool last) {
 	   printTraverse(root->left, indent, false);
 	   printTraverse(root->right, indent, true);
 	}
-  
 }
 
 
@@ -288,8 +294,6 @@ void RBtree::preOrderTraverse(Node* node) {
 		preOrderTraverse(node->right);
 	} 
 }
-
-
 
 void RBtree::inorder() {
 	inOrderTraverse(this->root);
